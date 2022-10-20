@@ -1,0 +1,11 @@
+commit fa84b074e4d0a821704fb9c5826cfd5bb0f5a232
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Oct 20 18:16:05 2022 +0200
+
+    Restore DirectFB Document Viewer
+
+commit 380ee66b21fc3a883a598fb32beacc19dd9683d8
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Oct 20 18:10:46 2022 +0200
+
+    Initial revision
