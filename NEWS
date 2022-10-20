@@ -1,0 +1,5 @@
+0.9.1
+-----
+- Meson build system
+- Follow MuPDF API changes
+- Add Poppler support
