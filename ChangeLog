@@ -1,3 +1,24 @@
+commit 0d81e74b326a93854ade768a91538f217f3bab63
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Tue Oct 25 03:27:28 2022 +0200
+
+    Use dynamically allocated memory for StatusBar/PageView (LiteBox are automatically freed on destroy)
+
+commit cf777586f77ec479d48b5401faf461d11415184e
+Merge: 380ee66 d967620
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Thu Oct 20 18:48:19 2022 +0200
+
+    Merge pull request #1 from caramelli/master
+    
+    Restore DirectFB Document Viewer
+
+commit d96762087f259107ee46eb95e80882c28657f5bc
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Oct 20 18:16:27 2022 +0200
+
+    Add ChangeLog
+
 commit fa84b074e4d0a821704fb9c5826cfd5bb0f5a232
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Thu Oct 20 18:16:05 2022 +0200
