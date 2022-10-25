@@ -38,30 +38,28 @@ typedef struct {
 } StatusBar;
 
 static DFBResult
-StatusBarInit( StatusBar  *statusbar,
-               int         x,
-               int         y,
-               int         width,
-               int         height,
-               LiteWindow *window )
+StatusBar_New( LiteBox       *parent,
+               DFBRectangle  *rect,
+               StatusBar    **ret_statusbar )
 {
-     DFBResult    ret;
-     DFBRectangle rect_page     = {           0, 1,         140, height - 2 };
-     DFBRectangle rect_zoom     = {         180, 1,          80, height - 2 };
-     DFBRectangle rect_title    = {         300, 1, width - 440, height - 2 };
-     DFBRectangle rect_progress = { width - 230, 0,         230, height };
-     DFBColor     white         = { 0xff, 0xf0, 0xf0, 0xf0 };
+     DFBResult     ret;
+     StatusBar    *statusbar;
+     DFBRectangle  rect_page     = {             0, 1,           140, rect->h - 2 };
+     DFBRectangle  rect_zoom     = {           180, 1,            80, rect->h - 2 };
+     DFBRectangle  rect_title    = {           300, 1, rect->w - 440, rect->h - 2 };
+     DFBRectangle  rect_progress = { rect->w - 230, 0,           230, rect->h     };
+     DFBColor      white         = { 0xff, 0xf0, 0xf0, 0xf0 };
 
-     memset( statusbar, 0, sizeof(StatusBar) );
+     statusbar = D_CALLOC( 1, sizeof(StatusBar) );
+     if (!statusbar)
+          return D_OOM();
 
-     /* Set parent box. */
-     statusbar->box.parent = LITE_BOX(window);
-
-     /* Set bounds within the parent. */
-     statusbar->box.rect.x = x;
-     statusbar->box.rect.y = y;
-     statusbar->box.rect.w = width;
-     statusbar->box.rect.h = height;
+     /* Initialize the box. */
+     ret = lite_init_box_at( &statusbar->box, parent, rect );
+     if (ret) {
+          D_FREE( statusbar );
+          return ret;
+     }
 
      /* Set background color. */
      statusbar->background.a   = 0xd0;
@@ -69,11 +67,6 @@ StatusBarInit( StatusBar  *statusbar,
      statusbar->background.g   = 0x23;
      statusbar->background.b   = 0x42;
      statusbar->box.background = &statusbar->background;
-
-     /* Initialize the box. */
-     ret = lite_init_box( &statusbar->box );
-     if (ret)
-          return ret;
 
      /* Setup the page label. */
      ret = lite_new_label( &statusbar->box, &rect_page, liteNoLabelTheme, rect_page.h - 3, &statusbar->label_page );
@@ -84,7 +77,7 @@ StatusBarInit( StatusBar  *statusbar,
      lite_set_label_color( statusbar->label_page, &white );
 
      /* Setup the zoom label. */
-     lite_new_label( &statusbar->box, &rect_zoom, liteNoLabelTheme, rect_zoom.h - 3, &statusbar->label_zoom );
+     ret = lite_new_label( &statusbar->box, &rect_zoom, liteNoLabelTheme, rect_zoom.h - 3, &statusbar->label_zoom );
      if (ret)
           return ret;
 
@@ -92,16 +85,21 @@ StatusBarInit( StatusBar  *statusbar,
      lite_set_label_color( statusbar->label_zoom, &white );
 
      /* Setup the title label. */
-     lite_new_label( &statusbar->box, &rect_title, liteNoLabelTheme, rect_title.h - 3, &statusbar->label_title );
+     ret = lite_new_label( &statusbar->box, &rect_title, liteNoLabelTheme, rect_title.h - 3, &statusbar->label_title );
+     if (ret)
+          return ret;
+
      lite_set_label_alignment( statusbar->label_title, LITE_LABEL_CENTER );
      lite_set_label_color( statusbar->label_title, &white );
 
      /* Setup the progress bar. */
-     lite_new_progressbar( &statusbar->box, &rect_progress, liteNoProgressBarTheme, &statusbar->progressbar );
+     ret = lite_new_progressbar( &statusbar->box, &rect_progress, liteNoProgressBarTheme, &statusbar->progressbar );
      if (ret)
           return ret;
 
      lite_set_progressbar_images( statusbar->progressbar, DATADIR"/progress_on.dfiff", DATADIR"/progress_off.dfiff" );
+
+     *ret_statusbar = statusbar;
 
      return DFB_OK;
 }
@@ -187,25 +185,23 @@ PageView_Destroy( LiteBox *box )
 }
 
 static DFBResult
-PageViewInit( PageView   *pageview,
-              int         x,
-              int         y,
-              int         width,
-              int         height,
-              LiteWindow *window )
+PageView_New( LiteBox       *parent,
+              DFBRectangle  *rect,
+              PageView     **ret_pageview )
 {
-     DFBResult ret;
+     DFBResult  ret;
+     PageView  *pageview;
 
-     memset( pageview, 0, sizeof(PageView) );
+     pageview = D_CALLOC( 1, sizeof(PageView) );
+     if (!pageview)
+          return D_OOM();
 
-     /* Set parent box. */
-     pageview->box.parent = LITE_BOX(window);
-
-     /* Set bounds within the parent. */
-     pageview->box.rect.x = x;
-     pageview->box.rect.y = y;
-     pageview->box.rect.w = width;
-     pageview->box.rect.h = height;
+     /* Initialize the box. */
+     ret = lite_init_box_at( &pageview->box, parent, rect );
+     if (ret) {
+          D_FREE( pageview );
+          return ret;
+     }
 
      /* Set background color. */
      pageview->background.a   = 0xff;
@@ -214,14 +210,11 @@ PageViewInit( PageView   *pageview,
      pageview->background.b   = 0x23;
      pageview->box.background = &pageview->background;
 
-     /* Initialize the box. */
-     ret = lite_init_box( &pageview->box );
-     if (ret)
-          return ret;
-
      /* Set callbacks. */
      pageview->box.Draw    = PageView_Draw;
      pageview->box.Destroy = PageView_Destroy;
+
+     *ret_pageview = pageview;
 
      return DFB_OK;
 }
@@ -314,8 +307,8 @@ PageViewScroll( PageView *pageview,
 typedef struct {
      LiteWindow *window;
 
-     PageView    pageview;
-     StatusBar   statusbar;
+     PageView   *pageview;
+     StatusBar  *statusbar;
 } MainWindow;
 
 static DFBResult
@@ -324,20 +317,22 @@ MainWindowInit( MainWindow *mainwin,
                 int         height )
 {
      DFBResult    ret;
-     DFBRectangle rect = { 0, 0, width, height };
+     DFBRectangle rect_window    = { 0,           0, width,      height };
+     DFBRectangle rect_pageview  = { 0,           0, width, height - 23 };
+     DFBRectangle rect_statusbar = { 0, height - 23, width,          23 };
 
      /* Create a window. */
-     ret = lite_new_window( NULL, &rect, DWCAPS_NONE, liteNoWindowTheme, "Projektor", &mainwin->window );
+     ret = lite_new_window( NULL, &rect_window, DWCAPS_NONE, liteNoWindowTheme, "Projektor", &mainwin->window );
      if (ret)
           return ret;
 
-     /* Initialize page view. */
-     ret = PageViewInit( &mainwin->pageview, 0, 0, width, height - 23, mainwin->window );
+     /* Setup the page view. */
+     ret = PageView_New( LITE_BOX(mainwin->window), &rect_pageview, &mainwin->pageview );
      if (ret)
           return ret;
 
-     /* Initialize status bar. */
-     ret = StatusBarInit( &mainwin->statusbar, 0, height - 23, width, 23, mainwin->window );
+     /* Setup the status bar. */
+     ret = StatusBar_New( LITE_BOX(mainwin->window), &rect_statusbar, &mainwin->statusbar );
      if (ret)
           return ret;
 
@@ -402,7 +397,7 @@ ProjektorInit( Projektor  *projektor,
      /* Initialize document provider. */
      ret = provider->Init( provider, filename, lite_get_dfb_interface() );
      if (ret) {
-          StatusBarSetTitle( &projektor->mainwin.statusbar, "Cannot open file" );
+          StatusBarSetTitle( projektor->mainwin.statusbar, "Cannot open file" );
           return ret;
      }
 
@@ -410,8 +405,8 @@ ProjektorInit( Projektor  *projektor,
      provider->GetDescription( provider, &projektor->desc );
 
      /* Set status bar. */
-     StatusBarSetTitle( &projektor->mainwin.statusbar, projektor->desc.title );
-     StatusBarSetZoom( &projektor->mainwin.statusbar, 100 * zoom );
+     StatusBarSetTitle( projektor->mainwin.statusbar, projektor->desc.title );
+     StatusBarSetZoom( projektor->mainwin.statusbar, 100 * zoom );
 
      projektor->error     = false;
      projektor->quit      = false;
@@ -431,7 +426,9 @@ ProjektorGotoPage( Projektor *projektor,
 {
      DFBResult         ret;
      IDirectFBSurface *image;
-     DocumentProvider *provider = projektor->provider;
+     PageView         *pageview  = projektor->mainwin.pageview;
+     StatusBar        *statusbar = projektor->mainwin.statusbar;
+     DocumentProvider *provider  = projektor->provider;
 
      if (pageno < 1)
           pageno = 1;
@@ -444,21 +441,21 @@ ProjektorGotoPage( Projektor *projektor,
 
      ret = provider->RenderPage( provider, pageno, projektor->zoom, &image );
      if (ret) {
-          StatusBarSetTitle( &projektor->mainwin.statusbar, "Cannot render page" );
+          StatusBarSetTitle( statusbar, "Cannot render page" );
           projektor->error = true;
           return ret;
      }
 
      if (projektor->error)
-          StatusBarSetTitle( &projektor->mainwin.statusbar, projektor->desc.title );
+          StatusBarSetTitle( statusbar, projektor->desc.title );
 
-     PageViewSetImage( &projektor->mainwin.pageview, image );
+     PageViewSetImage( pageview, image );
 
      image->Release( image );
 
      /* Update status bar. */
-     StatusBarSetProgress( &projektor->mainwin.statusbar, (float) (pageno - 1) / (projektor->desc.num_pages - 1) );
-     StatusBarSetPage( &projektor->mainwin.statusbar, pageno, projektor->desc.num_pages );
+     StatusBarSetProgress( statusbar, (float) (pageno - 1) / (projektor->desc.num_pages - 1) );
+     StatusBarSetPage( statusbar, pageno, projektor->desc.num_pages );
 
      projektor->pageno = pageno;
 
@@ -471,7 +468,9 @@ ProjektorSetZoom( Projektor *projektor,
 {
      DFBResult         ret;
      IDirectFBSurface *image;
-     DocumentProvider *provider = projektor->provider;
+     PageView         *pageview  = projektor->mainwin.pageview;
+     StatusBar        *statusbar = projektor->mainwin.statusbar;
+     DocumentProvider *provider  = projektor->provider;
 
      if (zoom < 0.25f)
           zoom = 0.25f;
@@ -484,20 +483,20 @@ ProjektorSetZoom( Projektor *projektor,
 
      ret = provider->RenderPage( provider, projektor->pageno, zoom, &image );
      if (ret) {
-          StatusBarSetTitle( &projektor->mainwin.statusbar, "Cannot render page" );
+          StatusBarSetTitle( statusbar, "Cannot render page" );
           projektor->error = true;
           return ret;
      }
 
      if (projektor->error)
-          StatusBarSetTitle( &projektor->mainwin.statusbar, projektor->desc.title );
+          StatusBarSetTitle( statusbar, projektor->desc.title );
 
-     PageViewSetImage( &projektor->mainwin.pageview, image );
+     PageViewSetImage( pageview, image );
 
      image->Release( image );
 
      /* Update status bar. */
-     StatusBarSetZoom( &projektor->mainwin.statusbar, 100 * zoom );
+     StatusBarSetZoom( statusbar, 100 * zoom );
 
      projektor->zoom = zoom;
 
@@ -510,7 +509,7 @@ ProjektorSetOptimal( Projektor *projektor )
      DFBResult         ret;
      float             zw, zh;
      float             zoom;
-     PageView         *pageview = &projektor->mainwin.pageview;
+     PageView         *pageview = projektor->mainwin.pageview;
      DocumentProvider *provider = projektor->provider;
 
      /* Get document description. */
@@ -548,7 +547,7 @@ ProjektorKeyboardFunc( DFBWindowEvent *evt,
                        void           *data )
 {
      Projektor *projektor = data;
-     PageView  *pageview  = &projektor->mainwin.pageview;
+     PageView  *pageview  = projektor->mainwin.pageview;
 
      switch (evt->key_symbol) {
           case DIKS_CURSOR_UP:
