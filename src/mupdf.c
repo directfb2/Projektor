@@ -50,10 +50,8 @@ DocumentProvider_MuPDF_Init( DocumentProvider *thiz,
      data->idirectfb = idirectfb;
 
      data->ctx = fz_new_context( NULL, NULL, FZ_STORE_DEFAULT );
-     if (!data->ctx) {
-          ret = D_OOM();
+     if (!data->ctx)
           goto error;
-     }
 
      fz_try( data->ctx ) {
           data->doc = fz_open_document( data->ctx, filename );
@@ -144,8 +142,10 @@ DocumentProvider_MuPDF_RenderPage( DocumentProvider  *thiz,
      fz_transform_rect( &rect, &matrix );
      fz_round_rect( &irect, &rect );
 
-     data->desc.width  = irect.x1 - irect.x0;
-     data->desc.height = irect.y1 - irect.y0;
+     desc.flags       = DSDESC_WIDTH | DSDESC_HEIGHT | DSDESC_PIXELFORMAT;
+     desc.width       = irect.x1 - irect.x0;
+     desc.height      = irect.y1 - irect.y0;
+     desc.pixelformat = DSPF_ABGR;
 
      fz_try( data->ctx ) {
           pixmap = fz_new_pixmap_with_bbox( data->ctx, fz_device_rgb, &irect );
@@ -158,11 +158,6 @@ DocumentProvider_MuPDF_RenderPage( DocumentProvider  *thiz,
           goto out;
      }
 
-     desc.flags       = DSDESC_WIDTH | DSDESC_HEIGHT | DSDESC_PIXELFORMAT;
-     desc.width       = data->desc.width;
-     desc.height      = data->desc.height;
-     desc.pixelformat = DSPF_ABGR;
-
      ret = data->idirectfb->CreateSurface( data->idirectfb, &desc, &surface );
      if (ret)
           goto out;
@@ -171,10 +166,10 @@ DocumentProvider_MuPDF_RenderPage( DocumentProvider  *thiz,
 
      src = fz_pixmap_samples( data->ctx, pixmap );
 
-     for (y = 0; y < data->desc.height; y++) {
-          direct_memcpy( ptr, src, data->desc.width * 4 );
+     for (y = 0; y < desc.height; y++) {
+          direct_memcpy( ptr, src, desc.width * 4 );
 
-          src += data->desc.width * 4;
+          src += desc.width * 4;
           ptr += pitch;
      }
 

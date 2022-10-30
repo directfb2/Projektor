@@ -2,4 +2,4 @@
 -----
 - Meson build system
 - Follow MuPDF API changes
-- Add Poppler support
+- Add DjVu and Poppler support
