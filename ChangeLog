@@ -1,3 +1,24 @@
+commit bda8a76992263949dda4110eecfa92af3f520c4e
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Sun Oct 30 17:00:42 2022 +0100
+
+    Add DjVu support
+
+commit 9c8d94a437602355c271b76f4a5779a3a1901c64
+Merge: cf77758 3bb5f64
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Tue Oct 25 03:29:59 2022 +0200
+
+    Merge pull request #2 from caramelli/master
+    
+    Use dynamically allocated memory for StatusBar/PageView (LiteBox are automatically freed on destroy)
+
+commit 3bb5f64a2bc1e1958e0d0e4085323fbc38b7d2ad
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Tue Oct 25 03:27:40 2022 +0200
+
+    Update ChangeLog
+
 commit 0d81e74b326a93854ade768a91538f217f3bab63
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Tue Oct 25 03:27:28 2022 +0200
