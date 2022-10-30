@@ -14,6 +14,11 @@
 #  with this program; if not, write to the Free Software Foundation, Inc.,
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
+djvu_source = []
+if enable_djvu
+  djvu_source = 'djvu.c'
+endif
+
 mupdf_source = []
 if enable_mupdf
   mupdf_source = 'mupdf.c'
@@ -25,6 +30,6 @@ if enable_poppler
 endif
 
 executable('projektor',
-           'projektor.c', mupdf_source, poppler_source,
-           dependencies: [lite_dep, mupdf_dep, poppler_dep],
+           'projektor.c', djvu_source, mupdf_source, poppler_source,
+           dependencies: [lite_dep, djvu_dep, mupdf_dep, poppler_dep],
            install: true)

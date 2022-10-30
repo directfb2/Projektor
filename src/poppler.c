@@ -133,10 +133,12 @@ DocumentProvider_Poppler_RenderPage( DocumentProvider  *thiz,
 
      poppler_page_get_size( page, &width, &height );
 
-     data->desc.width  = width  * zoom + 0.5f;
-     data->desc.height = height * zoom + 0.5f;
+     desc.flags       = DSDESC_WIDTH | DSDESC_HEIGHT | DSDESC_PIXELFORMAT;
+     desc.width       = width  * zoom + 0.5f;
+     desc.height      = height * zoom + 0.5f;
+     desc.pixelformat = DSPF_ARGB;
 
-     pixmap = cairo_image_surface_create( CAIRO_FORMAT_ARGB32, data->desc.width, data->desc.height );
+     pixmap = cairo_image_surface_create( CAIRO_FORMAT_ARGB32, desc.width, desc.height );
      status = cairo_surface_status( pixmap );
      if (status)
           goto out;
@@ -150,11 +152,6 @@ DocumentProvider_Poppler_RenderPage( DocumentProvider  *thiz,
 
      poppler_page_render( page, cairo );
 
-     desc.flags       = DSDESC_WIDTH | DSDESC_HEIGHT | DSDESC_PIXELFORMAT;
-     desc.width       = data->desc.width;
-     desc.height      = data->desc.height;
-     desc.pixelformat = DSPF_ARGB;
-
      ret = data->idirectfb->CreateSurface( data->idirectfb, &desc, &surface );
      if (ret)
           goto out;
@@ -163,10 +160,10 @@ DocumentProvider_Poppler_RenderPage( DocumentProvider  *thiz,
 
      src = cairo_image_surface_get_data( pixmap );
 
-     for (y = 0; y < data->desc.height; y++) {
-          direct_memcpy( ptr, src, data->desc.width * 4 );
+     for (y = 0; y < desc.height; y++) {
+          direct_memcpy( ptr, src, desc.width * 4 );
 
-          src += data->desc.width * 4;
+          src += desc.width * 4;
           ptr += pitch;
      }
 

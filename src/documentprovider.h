@@ -28,8 +28,6 @@
 typedef struct {
      char title[DOCUMENT_DESC_TITLE_LENGTH];
      int  num_pages;
-     int  width;
-     int  height;
 } DocumentDescription;
 
 /*

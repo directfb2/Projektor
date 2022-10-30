@@ -272,6 +272,14 @@ PageViewSetImage( PageView         *pageview,
 }
 
 static DFBResult
+PageViewGetImageSize( PageView *pageview,
+                      int      *ret_width,
+                      int      *ret_height )
+{
+     return pageview->image->GetSize( pageview->image, ret_width, ret_height );
+}
+
+static DFBResult
 PageViewScroll( PageView *pageview,
                 int       dx,
                 int       dy )
@@ -507,6 +515,7 @@ static DFBResult
 ProjektorSetOptimal( Projektor *projektor )
 {
      DFBResult         ret;
+     int               width, height;
      float             zw, zh;
      float             zoom;
      PageView         *pageview = projektor->mainwin.pageview;
@@ -515,8 +524,10 @@ ProjektorSetOptimal( Projektor *projektor )
      /* Get document description. */
      provider->GetDescription( provider, &projektor->desc );
 
-     zw = (float) pageview->box.rect.w / (projektor->desc.width / projektor->zoom);
-     zh = (float) pageview->box.rect.h / (projektor->desc.height / projektor->zoom);
+     PageViewGetImageSize( pageview, &width, &height );
+
+     zw = (float) LITE_BOX(pageview)->rect.w / (width  / projektor->zoom);
+     zh = (float) LITE_BOX(pageview)->rect.h / (height / projektor->zoom);
 
      zoom = (zw < zh) ? zw : zh;
 
@@ -552,13 +563,13 @@ ProjektorKeyboardFunc( DFBWindowEvent *evt,
      switch (evt->key_symbol) {
           case DIKS_CURSOR_UP:
                if (evt->type == DWET_KEYDOWN)
-                    PageViewScroll( pageview, 0, -pageview->box.rect.h / 5 );
+                    PageViewScroll( pageview, 0, -LITE_BOX(pageview)->rect.h / 5 );
 
                return DFB_BUSY;
 
           case DIKS_CURSOR_DOWN:
                if (evt->type == DWET_KEYDOWN)
-                    PageViewScroll( pageview, 0, pageview->box.rect.h / 5 );
+                    PageViewScroll( pageview, 0, LITE_BOX(pageview)->rect.h / 5 );
 
                return DFB_BUSY;
 
@@ -567,7 +578,7 @@ ProjektorKeyboardFunc( DFBWindowEvent *evt,
                     return DFB_OK;
 
                if (evt->type == DWET_KEYDOWN)
-                    PageViewScroll( pageview, -pageview->box.rect.w / 5, 0 );
+                    PageViewScroll( pageview, -LITE_BOX(pageview)->rect.w / 5, 0 );
 
                return DFB_BUSY;
 
@@ -576,7 +587,7 @@ ProjektorKeyboardFunc( DFBWindowEvent *evt,
                     return DFB_OK;
 
                if (evt->type == DWET_KEYDOWN)
-                    PageViewScroll( pageview, pageview->box.rect.w / 5, 0 );
+                    PageViewScroll( pageview, LITE_BOX(pageview)->rect.w / 5, 0 );
 
                return DFB_BUSY;
 
@@ -813,13 +824,12 @@ int main( int argc, char *argv[] )
                continue;
           }
 
-          if (*argv[n] != '-' && !filename) {
-               filename = argv[n];
-               continue;
+          if (filename || access( argv[n], R_OK )) {
+               print_usage();
+               return DFB_FALSE;
           }
 
-          print_usage();
-          return 1;
+          filename = argv[n];
      }
 
      if (!filename) {

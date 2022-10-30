@@ -23,8 +23,19 @@ add_global_arguments('-DDATADIR="@0@"'.format(projektordatadir), language: 'c')
 
 lite_dep = dependency('lite')
 
+enable_djvu    = get_option('djvu')
 enable_mupdf   = get_option('mupdf')
 enable_poppler = get_option('poppler')
+
+djvu_dep = []
+if enable_mupdf
+  djvu_dep = dependency('ddjvuapi', required: false)
+
+  if not djvu_dep.found()
+    warning('DjVu document renderer will not be built.')
+    enable_djvu = false
+  endif
+endif
 
 mupdf_dep = []
 if enable_mupdf
