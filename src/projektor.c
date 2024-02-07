@@ -97,7 +97,7 @@ StatusBar_New( LiteBox       *parent,
      if (ret)
           return ret;
 
-     lite_set_progressbar_images( statusbar->progressbar, DATADIR"/progress_on.dfiff", 0, DATADIR"/progress_off.dfiff", 0 );
+     lite_set_progressbar_images( statusbar->progressbar, DATADIR"/progress_on.dfiff", DATADIR"/progress_off.dfiff" );
 
      *ret_statusbar = statusbar;
 
