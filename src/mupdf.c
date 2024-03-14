@@ -148,7 +148,11 @@ DocumentProvider_MuPDF_RenderPage( DocumentProvider  *thiz,
      desc.pixelformat = DSPF_ABGR;
 
      fz_try( data->ctx ) {
+#ifdef MUDPF_FITZ_H
+          pixmap = fz_new_pixmap_with_bbox( data->ctx, fz_device_rgb( data->ctx ), &irect );
+#else
           pixmap = fz_new_pixmap_with_bbox( data->ctx, fz_device_rgb, &irect );
+#endif
 
           device = fz_new_draw_device( data->ctx, pixmap );
 

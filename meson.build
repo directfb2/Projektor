@@ -28,7 +28,7 @@ enable_mupdf   = get_option('mupdf')
 enable_poppler = get_option('poppler')
 
 djvu_dep = []
-if enable_mupdf
+if enable_djvu
   djvu_dep = dependency('ddjvuapi', required: false)
 
   if not djvu_dep.found()
@@ -57,7 +57,7 @@ if enable_poppler
   endif
 endif
 
-if not enable_mupdf and not enable_poppler
+if not enable_djvu and not enable_mupdf and not enable_poppler
   error('No document renderer found.')
 endif
 
