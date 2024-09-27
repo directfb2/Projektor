@@ -1,3 +1,6 @@
+Projektor depends on LiTE, first compile and install it : 
+https://github.com/directfb2/LiTE 
+
 Projektor is built using Meson and Ninja:
 
   $ meson build/
