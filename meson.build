@@ -17,7 +17,7 @@
 project('Projektor', 'c',
         version: '0.9.1')
 
-projektordatadir = join_paths(get_option('prefix'), get_option('datadir'), 'projektor')
+projektordatadir = get_option('prefix') / get_option('datadir') / 'projektor'
 
 add_global_arguments('-DDATADIR="@0@"'.format(projektordatadir), language: 'c')
 

@@ -116,10 +116,10 @@ DocumentProvider_DjVu_RenderPage( DocumentProvider  *thiz,
 {
      DFBResult                   ret = DFB_FAILURE;
      DFBSurfaceDescription       desc;
-     int                         pitch;
      int                         y;
      int                         dpi;
      ddjvu_rect_t                rect;
+     int                         pitch;
      void                       *ptr;
      unsigned char              *src;
      IDirectFBSurface           *surface;
