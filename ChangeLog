@@ -1,3 +1,69 @@
+commit 24a30c11dd82e1382c61cb6ae689a12f665170bc
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Sat Apr 5 20:01:07 2025 +0200
+
+    MuPDF: Follow API changes
+
+commit 8207edc1908c504a0689a5c6324a74124c433a8c
+Merge: 2577c68 30059c0
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Thu Mar 14 16:11:14 2024 +0100
+
+    Merge pull request #10 from caramelli/master
+    
+    Add support for colorspace context
+
+commit 30059c0b5067f79bb85b250ddfcb7b45b9284bfc
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Mar 14 15:45:35 2024 +0100
+
+    Add support for colorspace context
+
+commit 2577c68df219f8aac845e3b1c85f088d0e216c27
+Merge: 2a6fd25 5dc6aaf
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Wed Feb 7 18:16:06 2024 +0100
+
+    Merge pull request #8 from caramelli/master
+    
+    Restore legacy usage of lite_set_progressbar_images() function
+
+commit 5dc6aaf924f00800a3636734c778d495e1736c7a
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Wed Feb 7 18:11:04 2024 +0100
+
+    Restore legacy usage of lite_set_progressbar_images() function
+
+commit 2a6fd253e16a544ed91856a5280e7abe86cce099
+Merge: 91eca5b ed41e27
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Fri Jan 26 22:21:17 2024 +0100
+
+    Merge pull request #7 from caramelli/master
+    
+    Follow LiTE changes regarding lite_set_progressbar_images()
+
+commit ed41e27dce811eb17b912c672520c9de80ed24f9
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Jan 26 22:16:43 2024 +0100
+
+    Follow LiTE changes regarding lite_set_progressbar_images()
+
+commit 91eca5ba788aa50db20a6f1faca337c8d442e545
+Merge: 9c8d94a b4be80b
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Sun Oct 30 17:00:37 2022 +0100
+
+    Merge pull request #3 from caramelli/master
+    
+    Add DjVu support
+
+commit b4be80bb6e40fb5af1f719671737f8da516bf34c
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Sun Oct 30 17:01:01 2022 +0100
+
+    Update ChangeLog
+
 commit bda8a76992263949dda4110eecfa92af3f520c4e
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Sun Oct 30 17:00:42 2022 +0100

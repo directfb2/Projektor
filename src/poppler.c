@@ -114,11 +114,11 @@ DocumentProvider_Poppler_RenderPage( DocumentProvider  *thiz,
 {
      DFBResult                      ret = DFB_FAILURE;
      DFBSurfaceDescription          desc;
-     int                            pitch;
      int                            y;
      double                         width;
      double                         height;
      cairo_status_t                 status;
+     int                            pitch;
      void                          *ptr;
      unsigned char                 *src;
      IDirectFBSurface              *surface;
